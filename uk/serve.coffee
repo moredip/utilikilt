@@ -2,8 +2,6 @@ fs = require 'fs'
 express = require 'express'
 coffee = require 'coffee-script'
 
-htmlMangler = (req,res,next)->
-  
 
 htmlMangler = (req,res,next)->
   origWrite = res.write
@@ -33,7 +31,7 @@ htmlMangler = (req,res,next)->
 app = express.createServer()
   .use( express.logger({ buffer: 500 }) )
   .use( htmlMangler )
-  .use(express.static(__dirname + '/public'))
+  .use( express.static(__dirname + '/../public') )
 
 app.get '/reload.js', (req,res)->
   res.contentType "text/javascript"
@@ -42,4 +40,6 @@ app.get '/reload.js', (req,res)->
 
 app.listen( 3000 )
 
-console.log('/u.\\ UtiliKilt UP!')
+console.log('UtiliKilt UP!')
+
+exports = module.exports = app
