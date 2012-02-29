@@ -12,9 +12,5 @@ document.addEventListener 'DOMContentLoaded', ->
     socket = io.connect(window.location.protocol+"//"+window.location.host)
     socket.on 'refresh', (data)->
       console.log('refresh!',data)
-      window.location.reload()
+#      window.location.reload()
   setTimeout( nextTurn, 1 )
-
-#document.addEventListener 'DOMContentLoaded', ->
-  #document.getElementByT
-  #alert 'reloaded with coffee!'
