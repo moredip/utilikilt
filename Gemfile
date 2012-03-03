@@ -1,9 +1,8 @@
 # A sample Gemfile
 source "http://rubygems.org"
 
+gem 'rake-pipeline-web-filters'
+gem 'guard-rake'
+
 gem 'powder'
-
-gem 'guard-haml'
-gem 'guard-sass'
-
 gem 'showoff-io'
