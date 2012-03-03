@@ -1,4 +1,5 @@
 .bundle/
-vendor/bundle/
+vendor/bundle
+node_modules
 bin/
 tmp
