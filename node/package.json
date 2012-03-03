@@ -1,9 +1,21 @@
 {
-    "name": "utilikilt", 
-    "version": "0.0.1",
-    "dependencies": {
-				"socket.io": "0.9.x",
-        "coffee-script": "~1.2",
-        "express": "~2.5"
-    }
+  "author": "Pete Hodgson <npm@thepete.net> (http://thepete.net)",
+  "name": "utilikilt",
+  "description": "Seriously simple prototyping",
+  "version": "0.1.0",
+  "homepage": "http://github.com/moredip/utilikilt",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/moredip/utilikilt.git"
+  },
+  "main": "uk",
+  "engines": {
+    "node": "~0.6.5"
+  },
+  "dependencies": {
+    "socket.io": "0.9.x",
+    "coffee-script": "~1.2",
+    "express": "~2.5"
+  }
+  "devDependencies": {}
 }
