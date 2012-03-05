@@ -20,6 +20,10 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "thor"
   s.add_runtime_dependency "guard-shell"
+  s.add_runtime_dependency "rake-pipeline-web-filters"
+  s.add_runtime_dependency "haml"
+  s.add_runtime_dependency "sass"
+  s.add_runtime_dependency "tilt"
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"

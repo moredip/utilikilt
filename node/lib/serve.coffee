@@ -2,7 +2,6 @@ fs = require 'fs'
 express = require 'express'
 coffee = require 'coffee-script'
 
-
 htmlMangler = (req,res,next)->
   origWrite = res.write
   origEnd = res.end
@@ -28,18 +27,19 @@ htmlMangler = (req,res,next)->
   next()
 
 
-app = express.createServer()
-  .use( express.logger({ buffer: 500 }) )
-  .use( htmlMangler )
-  .use( express.static(__dirname + '/../public') )
+startServer = (publicDir, port)->
+  app = express.createServer()
+    .use( express.logger({ buffer: 500 }) )
+    .use( htmlMangler )
+    .use( express.static(publicDir) )
 
-app.get '/reload.js', (req,res)->
-  res.contentType "text/javascript"
-  fs.readFile __dirname+'/reload.coffee', (err,data) =>
-    res.send( coffee.compile(data.toString()) )
+  app.get '/reload.js', (req,res)->
+    res.contentType "text/javascript"
+    fs.readFile __dirname+'/reload.coffee', (err,data) =>
+      res.send( coffee.compile(data.toString()) )
 
-app.listen( 3000 )
+  app.listen( port )
+  console.log('UtiliKilt UP!')
+  app
 
-console.log('UtiliKilt UP!')
-
-exports = module.exports = app
+exports = module.exports = startServer

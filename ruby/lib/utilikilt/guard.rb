@@ -1,22 +1,32 @@
 require 'guard'
+require 'utilikilt/pipeline'
 
 module Utilikilt
-  module Guard
-    CONFIG = <<-EOS
-      guard 'shell' do
-        watch(%r{^source\/.*$}) do
-          Utilikilt::Guard.handle_file_change
-        end
-      end
-    EOS
-
-    def self.start
-      ::Guard.setup
-      ::Guard.start(:guardfile_contents => CONFIG)
+  class Guard
+    def initialize(project_dir)
+      @project_dir = project_dir
     end
 
-    def self.handle_file_change
-      puts 'stuff changed'
+    def config 
+      <<-EOS
+        PROJECT_DIR = #{@project_dir.inspect}
+        guard 'shell' do
+          watch(%r{^source\/[^\.].*$}) do |i|
+            Utilikilt::Guard.handle_file_change_for_dir(PROJECT_DIR)
+          end
+        end
+      EOS
+    end
+
+    def start
+      ::Guard.setup
+      ::Guard.start(:guardfile_contents => config)
+    end
+
+    def self.handle_file_change_for_dir(project_dir)
+      print "pipelining..."
+      Utilikilt.pipeline_for_dir(project_dir).invoke
+      puts " done!"
     end
 
   end
