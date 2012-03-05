@@ -17,10 +17,6 @@ PUBLIC_DIR = File.join( File.dirname(__FILE__), 'public' )
   #p haml_file
 #end
 
-task :default do
-end
-
-
 pipeline = Rake::Pipeline.build do
   input SOURCE_DIR, "**/*.haml"
   output PUBLIC_DIR
