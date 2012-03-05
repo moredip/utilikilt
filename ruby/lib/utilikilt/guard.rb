@@ -20,7 +20,7 @@ module Utilikilt
 
     def start
       ::Guard.setup
-      ::Guard.start(:guardfile_contents => config)
+      ::Guard.start( :watchdir => @project_dir, :guardfile_contents => config )
     end
 
     def self.handle_file_change_for_dir(project_dir)

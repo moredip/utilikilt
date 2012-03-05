@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "utilikilt"
   s.version     = Utilikilt::VERSION
   s.authors     = ["Pete Hodgson"]
-  s.email       = ["git@thepete.net"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.email       = ["github@thepete.net"]
+  s.homepage    = "http://github.com/moredip/utilikilt"
+  s.summary     = %q{Seriously simple prototyping}
+  s.description = %q{Prototype your UI development using tools like HAML and SASS with your changes showing up in the browser every time you save.}
 
   s.rubyforge_project = "utilikilt"
 
@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "haml"
   s.add_runtime_dependency "sass"
   s.add_runtime_dependency "tilt"
+  s.add_runtime_dependency "powder"
+  s.add_runtime_dependency "showoff-io"
 
   # specify any dependencies here; for example:
   # s.add_development_dependency "rspec"
