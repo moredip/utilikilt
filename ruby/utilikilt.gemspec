@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rake-pipeline-web-filters"
   s.add_runtime_dependency "haml"
   s.add_runtime_dependency "sass"
+  s.add_runtime_dependency "redcarpet"
   s.add_runtime_dependency "tilt"
   s.add_runtime_dependency "powder"
   s.add_runtime_dependency "showoff-io"

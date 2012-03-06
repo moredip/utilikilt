@@ -1,4 +1,7 @@
 require 'haml'
+require 'redcarpet'
+require 'tilt'
+
 require 'rake-pipeline'
 module Rake
   class Pipeline
@@ -15,12 +18,21 @@ module Utilikilt
     input_dir = File.join( dir,'source')
     output_dir = File.join( dir,'public')
     Rake::Pipeline.build do
-      input input_dir, "**/*.haml"
+      input input_dir, "**/*"
       output output_dir
 
-      filter(Rake::Pipeline::Web::Filters::TiltFilter) do |input|
-        input.sub(/\.haml$/, '.html')
+      match "*.haml" do
+        filter(Rake::Pipeline::Web::Filters::TiltFilter) do |input|
+          input.sub(/\.haml$/, '.html')
+        end
       end
+
+      match "*.{md,markdown}" do
+        filter(Rake::Pipeline::Web::Filters::TiltFilter) do |input|
+          input.sub(/\.(md|markdown)$/, '.html')
+        end
+      end
+
     end
   end
 end
