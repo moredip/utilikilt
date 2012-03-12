@@ -23,7 +23,7 @@ module Utilikilt
 
     private
     def executable?( exe )
-      false
+      system "command -v #{exe} >/dev/null 2>&1"
     end
   end
 end
