@@ -3,16 +3,19 @@ require 'utilikilt/pipeline'
 
 module Utilikilt
   class Guard
-    def initialize(project_dir)
-      @project_dir = project_dir
+    def initialize(opts)
+      @options = opts
     end
 
     def config 
+      joined_exts = @options['input_file_exts'].join("|")
+      input_regex = %r<[^/]+\.(#{joined_exts})$>
       <<-EOS
-        PROJECT_DIR = #{@project_dir.inspect}
+        OPTIONS = #{@options.inspect}
         guard 'shell' do
-          watch(%r{^source\/[^\.].*$}) do |i|
-            Utilikilt::Guard.handle_file_change_for_dir(PROJECT_DIR)
+          watch(#{input_regex.inspect}) do |i|
+            puts i.to_s+" changed"
+            Utilikilt::Guard.handle_file_change(OPTIONS)
           end
         end
       EOS
@@ -20,12 +23,14 @@ module Utilikilt
 
     def start
       ::Guard.setup
-      ::Guard.start( :watchdir => @project_dir, :guardfile_contents => config )
+      ::Guard.start( :watchdir => @options['input_dir'], :guardfile_contents => config )
     end
 
-    def self.handle_file_change_for_dir(project_dir)
+    def self.handle_file_change(opts)
       print "pipelining..."
-      Utilikilt.pipeline_for_dir(project_dir).invoke
+      pl = Utilikilt.pipeline(opts)
+      print "..."
+      pl.invoke
       puts " done!"
     end
 

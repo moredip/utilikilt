@@ -10,8 +10,13 @@ module Utilikilt
     #end
 
     desc "watch", "watch for changes to source files and automatically create corresponding public files"
-    def watch( project_dir=nil )
-      start_guard( normalize_project_dir(project_dir) )
+    method_option :input_dir, :aliases => '-i', :type => 'string'
+    method_option :output_dir, :aliases => '-o', :type => 'string'
+    method_option :project_dir, :aliases => '-p', :type => 'string'
+    def watch()
+      opts = normalize_options(options)
+      opts['input_file_exts'] = Utilikilt::INPUT_FILE_EXTS 
+      start_guard( opts ) 
     end
 
     desc "serve", "Start a little web server host whatever is in your public directory, with live refresh"
@@ -22,7 +27,7 @@ module Utilikilt
     desc "up", "live-compile the contents of source, and serve it up to your browser with live-refresh"
     def up( project_dir=nil )
       project_dir = normalize_project_dir(project_dir)
-      guard_thread = Thread.new{ start_guard(project_dir) }
+      guard_thread = Thread.new{ start_guard(:project_dir => project_dir) }
       serve_thread = Thread.new{ start_serve(project_dir) }
 
       serve_thread.join # joining on serve rather than guard is arbitrary
@@ -30,8 +35,8 @@ module Utilikilt
     
     private 
 
-    def start_guard(project_dir)
-      Utilikilt::Guard.new(project_dir).start
+    def start_guard(options)
+      Utilikilt::Guard.new(options).start
     end
 
     def start_serve(project_dir)
@@ -44,6 +49,22 @@ module Utilikilt
       end
 
       server.launch_server
+    end
+
+
+    def normalize_options( opts )
+      return { :project_dir => Dir.getwd } if opts.empty?
+
+      normalized = {}
+      %w{project_dir input_dir output_dir}.each do |k|
+        normalized[k] = File.expand_path( opts[k] ) if opts.has_key?(k)
+      end
+
+      normalized['project_dir'] = Dir.getwd unless opts.has_key?( 'project_dir' )
+      normalized['input_dir'] ||= File.join( normalized['project_dir'], 'source' )
+      normalized['output_dir'] ||= File.join( normalized['project_dir'], 'public' )
+
+      normalized
     end
 
     def normalize_project_dir( project_dir )

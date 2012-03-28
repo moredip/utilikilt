@@ -14,9 +14,12 @@ end
 require 'rake-pipeline-web-filters/tilt_filter'
 
 module Utilikilt
-  def self.pipeline_for_dir( dir ) 
-    input_dir = File.join( dir,'source')
-    output_dir = File.join( dir,'public')
+  INPUT_FILE_EXTS = %w{haml md markdown}
+
+  def self.pipeline( opts )
+    input_dir = opts['input_dir']
+    output_dir = opts['output_dir']
+
     Rake::Pipeline.build do
       input input_dir, "**/*"
       output output_dir
@@ -32,7 +35,6 @@ module Utilikilt
           input.sub(/\.(md|markdown)$/, '.html')
         end
       end
-
     end
   end
 end
