@@ -22,6 +22,8 @@ class Scanner
     'coffee' => 'js'
   }
 
+  TILT_OPTIONS = {:cache => false}
+
   def scan
     @files_processed = 0
     input_file_glob = '*.{'+INPUT_TO_OUTPUT_EXT_MAP.keys.join(',')+'}'
@@ -45,9 +47,13 @@ class Scanner
   def filter input, output
     require 'tilt'
 
+    output.dirname.mkpath
+
     print "#{input} => #{output} ... "
-      template = Tilt.new( input.to_s )
-      File.open( output, 'w' ) do |out_file|
+      template = Tilt.new( input.to_s, 1, TILT_OPTIONS )
+
+      output.dirname.mkpath
+      output.open('w') do |out_file|
         out_file.write( template.render )
       end
     puts " done"
@@ -63,7 +69,7 @@ class Scanner
 
     raise ArgumentError, "unrecognized input file extension for #{input}" if output_ext.nil?
 
-    File.join( @output_base, relative.sub_ext(output_ext) )
+    @output_base.join( relative.sub_ext(output_ext) )
   end
 
 end

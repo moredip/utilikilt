@@ -1,6 +1,7 @@
 require 'thor'
 require 'utilikilt/guard'
 require 'utilikilt/scanner'
+require 'utilikilt/watcher'
 require 'utilikilt/node_proxy'
 
 module Utilikilt
@@ -16,8 +17,9 @@ module Utilikilt
     method_option :project_dir, :aliases => '-p', :type => 'string'
     def watch()
       opts = normalize_options(options)
-      opts['input_file_exts'] = Utilikilt::INPUT_FILE_EXTS 
-      start_guard( opts ) 
+      start_watcher(opts)
+      #opts['input_file_exts'] = Utilikilt::INPUT_FILE_EXTS 
+      #start_guard( opts ) 
     end
 
     desc "build", "rebuild all input files"
@@ -52,6 +54,13 @@ module Utilikilt
     def run_one_off_scan(options)
       scanner = Scanner.new( options )
       scanner.scan
+    end
+
+    def start_watcher(options)
+      scanner = Scanner.new( options )
+      Watcher.watch options['input_dir'] do
+        scanner.scan
+      end
     end
 
     def start_serve(project_dir)
