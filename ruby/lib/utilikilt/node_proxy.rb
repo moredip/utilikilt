@@ -1,5 +1,10 @@
 module Utilikilt
   class NodeProxy
+    NODE_DIR = File.join( File.dirname(__FILE__), '..','..', 'node' )
+
+    def initialize( serve_dir )
+      @serve_dir = File.expand_path(serve_dir)
+    end
 
     # returns nil if all pre-requisites are present
     # otherwise returns a string describing next steps to resolving
@@ -18,7 +23,7 @@ module Utilikilt
     end
 
     def launch_server
-      `uk_server`
+      system 'node_modules/.bin/coffee', 'lib/uk.coffee', @serve_dir, {:chdir => NODE_DIR}
     end
 
     private
