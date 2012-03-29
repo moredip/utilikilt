@@ -1,5 +1,6 @@
 require 'thor'
 require 'utilikilt/guard'
+require 'utilikilt/scanner'
 require 'utilikilt/node_proxy'
 
 module Utilikilt
@@ -19,6 +20,15 @@ module Utilikilt
       start_guard( opts ) 
     end
 
+    desc "build", "rebuild all input files"
+    method_option :input_dir, :aliases => '-i', :type => 'string'
+    method_option :output_dir, :aliases => '-o', :type => 'string'
+    method_option :project_dir, :aliases => '-p', :type => 'string'
+    def build()
+      opts = normalize_options(options)
+      run_one_off_scan( opts ) 
+    end
+
     desc "serve", "Start a little web server host whatever is in your public directory, with live refresh"
     def serve( project_dir=nil )
       start_serve( normalize_project_dir(project_dir) )
@@ -32,11 +42,16 @@ module Utilikilt
 
       serve_thread.join # joining on serve rather than guard is arbitrary
     end
-    
+
     private 
 
     def start_guard(options)
       Utilikilt::Guard.new(options).start
+    end
+
+    def run_one_off_scan(options)
+      scanner = Scanner.new( options )
+      scanner.scan
     end
 
     def start_serve(project_dir)
@@ -53,8 +68,6 @@ module Utilikilt
 
 
     def normalize_options( opts )
-      return { :project_dir => Dir.getwd } if opts.empty?
-
       normalized = {}
       %w{project_dir input_dir output_dir}.each do |k|
         normalized[k] = File.expand_path( opts[k] ) if opts.has_key?(k)
