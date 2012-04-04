@@ -32,6 +32,7 @@ startServer = (publicDir, port)->
     .use( express.logger({ buffer: 500 }) )
     .use( htmlMangler )
     .use( express.static(publicDir) )
+    .use( express.directory(publicDir) )
 
   app.get '/reload.js', (req,res)->
     res.contentType "text/javascript"
