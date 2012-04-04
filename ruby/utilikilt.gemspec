@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.extensions << 'ext/check_for_node/extconf.rb'
+
   s.add_runtime_dependency "thor"
   s.add_runtime_dependency "rb-fsevent"
   s.add_runtime_dependency "haml"
