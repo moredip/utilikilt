@@ -2,13 +2,10 @@ require 'thor'
 require 'utilikilt/scanner'
 require 'utilikilt/watcher'
 require 'utilikilt/node_proxy'
+require 'utilikilt/workspace'
 
 module Utilikilt
   class CLI < Thor
-    #desc "up", "serve up everything in public, with live refresh"
-    #def up
-      #puts "UTILIKILT! UP!"
-    #end
 
     desc "watch", "watch for changes to source files and automatically create corresponding public files"
     method_option :input_dir, :aliases => '-i', :type => 'string'
@@ -42,6 +39,16 @@ module Utilikilt
       serve_thread.join # joining on serve rather than watch is arbitrary
     end
 
+    desc "workspace", "create a new workspace directory"
+    def workspace( workspace_name )
+      workspace = Workspace.new( Dir.getwd, workspace_name )
+      problems = workspace.create_or_report_problems
+      if problems
+        puts 
+        puts problems
+        exit 1
+      end
+    end
     private 
 
     def run_one_off_scan(options)
@@ -51,6 +58,7 @@ module Utilikilt
 
     def start_watcher(options)
       scanner = Scanner.new( options )
+      scanner.scan # do an initial build
       Watcher.watch options['input_dir'] do
         scanner.scan
       end
@@ -58,13 +66,6 @@ module Utilikilt
 
     def start_serve(options)
       server = Utilikilt::NodeProxy.new( options['output_dir'] )
-
-      problems = server.check_prereqs_and_advise
-      if problems
-        puts problems
-        exit 1
-      end
-
       server.launch_server
     end
 
@@ -76,8 +77,8 @@ module Utilikilt
       end
       normalized['project_dir'] = File.expand_path( project_dir || Dir.getwd )
 
-      normalized['input_dir'] ||= File.join( normalized['project_dir'], 'source' )
-      normalized['output_dir'] ||= File.join( normalized['project_dir'], 'public' )
+      normalized['input_dir'] ||= File.join( normalized['project_dir'], Utilikilt::DEFAULT_INPUT_DIR_NAME )
+      normalized['output_dir'] ||= File.join( normalized['project_dir'], Utilikilt::DEFAULT_OUTPUT_DIR_NAME )
 
       normalized
     end
